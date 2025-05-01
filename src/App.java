@@ -1,5 +1,5 @@
 public class App {
-    public static void main(String[] args) {
-        System.out.println("Hola desde Java en Jenkins!");
+    public static int sum(int a, int b) {
+        return a + b;
     }
 }
