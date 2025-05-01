@@ -1,30 +1,27 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk-17' 
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Thadashy08/java-project.git'
+                git 'https://github.com/TU-USUARIO/java-project.git'
             }
         }
 
-        stage('Build') {
+        stage('Compile') {
             steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew build'
+                sh 'mkdir -p out && javac -d out src/App.java'
             }
         }
 
-        stage('Test') {
+        stage('Run') {
             steps {
-                sh './gradlew test'
+                sh 'java -cp out App'
             }
-        }
-    }
-
-    post {
-        always {
-            junit 'build/test-results/test/*.xml'
         }
     }
 }
