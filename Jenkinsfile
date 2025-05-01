@@ -2,22 +2,41 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Thadashy08/java-project.git'
+            }
+        }
 
-        stage('Build and Test') {
+        stage('Verify Java') {
+            steps {
+                sh 'which javac'
+                sh 'javac -version'
+            }
+        }
+
+        stage('Build') {
             steps {
                 sh '''
-                    mkdir -p out test-reports
-                    javac -cp .:junit-4.13.2.jar:hamcrest-core-1.3.jar -d out src/*.java
-                    java -cp .:out:junit-4.13.2.jar:hamcrest-core-1.3.jar org.junit.runner.JUnitCore AppTest \
-                        | tee test-reports/results.txt
+                    mkdir -p out
+                    javac -d out src/*.java
                 '''
             }
         }
 
-        stage('Publish Report') {
+        stage('Test') {
             steps {
-                junit testResults: 'test-reports/*.xml', allowEmptyResults: true
+                sh '''
+                    mkdir -p test-reports
+                    java -cp out AppTest > test-reports/report.html
+                '''
             }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'test-reports/report.html', fingerprint: true
         }
     }
 }
