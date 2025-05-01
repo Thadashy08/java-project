@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'python-agent' }
+    agent any
 
     stages {
         stage('Checkout') {
@@ -10,6 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
+                sh 'chmod +x ./gradlew'
                 sh './gradlew build'
             }
         }
